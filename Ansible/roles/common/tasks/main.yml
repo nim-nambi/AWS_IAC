@@ -89,6 +89,9 @@
     state: present
     filename: kubernetes.list
 
+- name: Install aptitude using apt
+  apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
 - name: "Installing kubeadm, kubectl and kubelet"
   package:
     name: "{{ k8-packages }}"

@@ -1,2 +1,44 @@
 ---
 # tasks file for master
+- name: Pull the kubernetes service images - kubeadm
+  command: kubeadm config images pull
+
+- name: Initialize the Kubernetes Master - kubeadm init
+  command: "kubeadm init --pod-network-cidr={{ pod_network_cidr }} --ignore-preflight-errors=NumCPU --ignore-preflight-errors=Mem"
+  ignore_errors: true
+
+- name: Create /.kube directory
+  file:
+    path: $HOME/.kube
+    state: directory
+
+- name: Copy kubernetes admin.conf file to /.kube/
+  copy:
+    src:  /etc/kubernetes/admin.conf
+    dest: $HOME/.kube/config
+    remote_src: yes
+
+- name: " Changing the owner permission"
+  shell: "sudo chown $(id -u):$(id -g) $HOME/.kube/config"
+
+- name: Copy kube-flannel.yml to master node
+  get_url:
+    url: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+    dest: $HOME/kube-flannel.yml
+
+- name: Set network in the $HOME/kube-flannel.yml file
+  lineinfile:
+    path: $HOME/kube-flannel.yml
+    regexp: '\"Network\":*'
+    line: "      \"Network\": \"{{ pod_network_cidr }}\","
+ 
+- name: Install CNI (Flannel)
+  command: kubectl apply -f $HOME/kube-flannel.yml
+
+- name: Create a token to join the slave nodes
+  command: kubeadm token create --print-join-command
+  register: join_command
+
+- name: Print the command to join the slave nodes
+  debug: 
+    var: join_command.stdout_lines
