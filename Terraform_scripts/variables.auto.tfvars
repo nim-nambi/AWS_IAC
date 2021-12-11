@@ -6,7 +6,12 @@ variable "aws_region" {
 
 variable "key_name" {
     default     = "key-name"
-    description = "pem file to ssh into EC2 instances"
+    description = "name of key ssh into EC2 instances"
+}
+
+variable "key_path" {
+    default     = "path/"
+    description = "pem file location"
 }
 
 variable "vpc_cidr" {

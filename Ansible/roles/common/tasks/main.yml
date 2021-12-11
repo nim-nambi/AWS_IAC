@@ -1,2 +1,102 @@
 ---
 # tasks file for common
+- debug:
+    msg: "Installing common dependencies on both nodes"
+
+- name: Install aptitude using apt
+  apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+- name: Install required packages
+  apt:
+    pkg:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg
+    - lsb-release
+
+- name: add gpg key for docker
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg 
+    state: present
+
+- name: Run the equivalent of "apt-get update"
+  apt:
+    update_cache: yes
+
+- name: add docker repository to apt
+    apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+
+- name: Install docker and its dependecies
+  apt: 
+    name: "{{ docker-packages }}"
+    state: present
+    update_cache: yes
+
+- name: "Starting and enabling docker service permanently"
+  service:
+    name: "docker"
+    state: started
+    enabled: yes
+
+- name: "Changing docker configurations - switching to systemd"
+    copy:
+      src: "../files/daemon.json"
+      dest: "/etc/docker/daemon.json"
+    register: daemon
+
+- name: "enforcing changes to docker"
+    service:
+      name: docker
+      state: restarted
+    when: daemon.changed
+
+- name: "Installing iproute-tc software"
+  package:
+    name: "iproute-tc"
+    state: present
+
+- name: "Configuring network"
+  copy:
+    dest: "/etc/sysctl.d/k8s.conf"
+    content:
+      - "net.bridge.bridge-nf-call-ip6tables = 1"
+      - "net.bridge.bridge-nf-call-iptables = 1"
+
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: "{{ item }}"
+    fstype: swap
+    state: absent
+  with_items:
+    - swap
+    - none
+
+- name: Disable swap
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+- name: Add an apt signing key for Kubernetes
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Adding apt repository for Kubernetes
+  apt_repository:
+    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+    filename: kubernetes.list
+
+- name: "Installing kubeadm, kubectl and kubelet"
+  package:
+    name: "{{ k8-packages }}"
+    state: present
+    update_cache: yes
+
+- name: "enabling kubelet"
+  service:
+    name: kubelet
+    state: started
+    enabled: yes

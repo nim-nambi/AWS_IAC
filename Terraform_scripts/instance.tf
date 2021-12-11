@@ -6,8 +6,15 @@ resource "aws_instance" "Master_node" {
   subnet_id = element(aws_subnet.Cluster_subnets.*.id,count.index)
   key_name = var.key_name
 
+  provisioner "remote-exec" {
+    type = "ssh"
+    user = local.ss_user
+    private_key = file(local.key_path)
+    host = aws_instance.Master_node.public_ip
+  }
+
   tags = {
-    Name = "Master_Node"
+    Name = "Master_node"
     Type = "Master"
   }
 }
@@ -20,16 +27,15 @@ resource "aws_instance" "Worker_node" {
   subnet_id = element(aws_subnet.Cluster_subnets.*.id, count.index)
   key_name = var.key_name
 
+  provisioner "remote-exec" {
+    type = "ssh"
+    user = local.ss_user
+    private_key = file(local.key_path)
+    host = aws_instance.Worker_node.public_ip
+  }
+
   tags = {
     Name = "Worker_node"
     Type = "Worker"
   }
-}
-
-output "Master_node" {
-  value = aws_instance.Master_node.public_ip
-}
-
-output "Worker_node" {
-  value = aws_instance.Worker_node.public_ip
 }
