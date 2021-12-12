@@ -1,1 +1,14 @@
-setup
+- name: Install Necessary Software
+  hosts: all
+  roles:
+    -  role: common
+
+- name: Setup Master node
+  hosts: Master
+  roles:
+  -  role: master
+
+- name: Setup worker  node
+  hosts: worker
+  roles:
+  -  role: node
