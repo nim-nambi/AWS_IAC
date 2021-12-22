@@ -6,9 +6,9 @@
 - name: Setup Master node
   hosts: Master
   roles:
-  -  role: master
+    -  role: master
 
-- name: Setup worker  node
-  hosts: worker
+- name: Setup worker node
+  hosts: Worker
   roles:
-  -  role: node
+    -  role: node
