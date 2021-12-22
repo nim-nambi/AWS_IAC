@@ -1,3 +1,5 @@
+---
+
 - name: Install Necessary Software
   hosts: all
   roles:
@@ -11,4 +13,4 @@
 - name: Setup worker node
   hosts: Worker
   roles:
-    -  role: node
+    -  role: worker
