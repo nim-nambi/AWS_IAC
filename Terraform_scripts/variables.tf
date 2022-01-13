@@ -1,16 +1,20 @@
 variable "aws_region" {
     type        = string
     default     = "ap-south-1"
+}
 
+variable "aws_availability_zone" {
+    type = string
+    default = "ap-south-1a"
 }
 
 variable "key_name" {
-    default     = "key-name"
+    default     = "devops"
     description = "name of key ssh into EC2 instances"
 }
 
 variable "key_path" {
-    default     = "path/"
+    default     = "../devops.pem"
     description = "pem file location"
 }
 
@@ -26,10 +30,10 @@ variable "subnet_cidr" {
 
 variable "server_ami" {
     type        = string
-    default     = "..."
+    default     = "ami-08ee6644906ff4d6c"
 }
 
 variable "instance_type" {
-    default     = "what ever is the biggest and free"
+    default     = "t2.micro"
     type        = string
 }
