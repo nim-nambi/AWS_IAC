@@ -1,3 +1,5 @@
+#use when Ansible is installed on aws since it will respond to api calls
+
 import pprint
 import boto3
 import json
