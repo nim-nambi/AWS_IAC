@@ -6,11 +6,11 @@
     -  role: common
 
 - name: Setup Master node
-  hosts: Master
+  hosts: Type_Master
   roles:
     -  role: master
 
 - name: Setup worker node
-  hosts: Worker
+  hosts: Type_Worker
   roles:
     -  role: worker

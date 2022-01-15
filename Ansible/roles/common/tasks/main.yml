@@ -25,7 +25,7 @@
     update_cache: yes
 
 - name: add docker repository to apt
-    apt_repository:
+  apt_repository:
     repo: deb https://download.docker.com/linux/ubuntu bionic stable
     state: present
 
@@ -42,16 +42,16 @@
     enabled: yes
 
 - name: "Changing docker configurations - switching to systemd"
-    copy:
-      src: "../files/daemon.json"
-      dest: "/etc/docker/daemon.json"
-    register: daemon
+  copy:
+    src: "../files/daemon.json"
+    dest: "/etc/docker/daemon.json"
+  register: daemon
 
 - name: "enforcing changes to docker"
-    service:
-      name: docker
-      state: restarted
-    when: daemon.changed
+  service:
+    name: docker
+    state: restarted
+  when: daemon.changed
 
 - name: "Installing iproute-tc software"
   package:
