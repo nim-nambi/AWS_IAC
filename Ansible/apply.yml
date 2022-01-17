@@ -1,6 +1,6 @@
 ---
 
 - name: Apply K8 yaml file
-  hosts: Worker
+  hosts: Type_Worker
   roles:
-    -  role: apply
+    -  role: deploy
