@@ -8,4 +8,4 @@ regions:
 
 keyed_groups:
   - key: tags
-    prefix: ""
+    prefix: Tag_name
