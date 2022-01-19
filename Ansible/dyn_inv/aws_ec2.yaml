@@ -4,8 +4,14 @@ aws_secret_key: ""
 
 regions:
   - ap-south-1
-
+boto_profile: aws_profile
+filters:
+  instance-state-name: running
+strict: False
 
 keyed_groups:
   - key: tags
     prefix: Tag_name
+
+compose:
+  ansible_host: private_ip_address
