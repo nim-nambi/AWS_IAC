@@ -13,5 +13,5 @@ keyed_groups:
   - key: tags
     prefix: Tag_name
 
-compose:
-  ansible_host: private_ip_address
+hostnames:
+  - ip-address
