@@ -31,7 +31,7 @@
 
 - name: Install docker and its dependecies
   apt: 
-    name: "{{ docker-packages }}"
+    name: "{{ Docker_Packages }}"
     state: present
     update_cache: yes
 
@@ -53,9 +53,9 @@
     state: restarted
   when: daemon.changed
 
-- name: "Installing iproute-tc software"
+- name: "Installing iproute2 for Traffic control"
   package:
-    name: "iproute-tc"
+    name: "iproute2"
     state: present
 
 - name: "Configuring network"
@@ -76,7 +76,6 @@
 
 - name: Disable swap
   command: swapoff -a
-  when: ansible_swaptotal_mb > 0
 
 - name: Add an apt signing key for Kubernetes
   apt_key:
@@ -94,7 +93,7 @@
 
 - name: "Installing kubeadm, kubectl and kubelet"
   package:
-    name: "{{ k8-packages }}"
+    name: "{{ K8_Packages }}"
     state: present
     update_cache: yes
 

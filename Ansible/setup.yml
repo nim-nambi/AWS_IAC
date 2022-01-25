@@ -1,7 +1,7 @@
 ---
 
 - name: Install Necessary Software
-  hosts: all
+  hosts: aws_ec2
   roles:
     -  role: common
 

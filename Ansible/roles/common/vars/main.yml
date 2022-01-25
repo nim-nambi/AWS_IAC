@@ -1,11 +1,11 @@
 ---
 # vars file for common
-docker-packages:
+Docker_Packages:
   - docker-ce 
   - docker-ce-cli 
   - containerd.io
 
-k8-packages:
+K8_Packages:
   - kubelet
   - kubeadm
   - kubectl
