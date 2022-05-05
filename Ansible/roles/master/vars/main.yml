@@ -1,4 +1,5 @@
 ---
 # vars file for master
-master_ip: hostvars[inventory_hostname]['ansible_default_ipv4']['master']
-pod_network_cidr: 192.168.1.0/16
+kubernetes_network_cidr: 192.168.1.0/16
+user : "nim"
+dest_path : "/home/nim/Desktop/AWS_IAC/Ansible/roles/worker/files/join_command.sh"

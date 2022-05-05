@@ -1,9 +1,13 @@
 ---
 # tasks file for worker
-- name: Copy the join command to server location
-  copy: 
-    src: "../files/join-command" 
-    dest: "/tmp/join-command.sh mode=0777"
+- name: Copy the join command to worker node
+  ansible.builtin.copy:    
+    src: "/home/nim/Desktop/AWS_IAC/Ansible/roles/worker/files/join_command.sh" 
+    dest: "/tmp/join-command.sh"
+    mode: '0777'
 
 - name: Join the node to cluster
   command: sh /tmp/join-command.sh
+
+# - name: Name nodes assign Worker role
+#   command: "kubectl node-role.kubernetes.io/<role name>=<key - Worker>"

@@ -3,7 +3,7 @@
 - name: Install Necessary Software
   hosts: aws_ec2
   roles:
-    -  role: common
+   -  role: common
 
 - name: Setup Master node
   hosts: Tag_Type_Master

@@ -4,22 +4,24 @@
   command: kubeadm config images pull
 
 - name: Initialize the Kubernetes Master - kubeadm init
-  command: "kubeadm init --control-plane-endpoint={{master_ip}} --pod-network-cidr={{ pod_network_cidr }} --ignore-preflight-errors=NumCPU --ignore-preflight-errors=Mem"
+  command: "kubeadm init --pod-network-cidr={{ kubernetes_network_cidr }} --ignore-preflight-errors=NumCPU --ignore-preflight-errors=Mem --ignore-preflight-errors=FileContent--proc-sys-net-bridge-bridge-nf-call-iptables"
   ignore_errors: true
 
 - name: Create /.kube directory
   file:
     path: $HOME/.kube
     state: directory
+    mode: 0755
 
 - name: Copy kubernetes admin.conf file to /.kube/
   copy:
     src:  /etc/kubernetes/admin.conf
     dest: $HOME/.kube/config
     remote_src: yes
+    owner: ubuntu
 
-- name: " Changing the owner permission"
-  shell: "sudo chown $(id -u):$(id -g) $HOME/.kube/config"
+# - name: " Changing the owner permission"
+#   shell: "sudo chown $(id -u):$(id -g) $HOME/.kube/config"
 
 - name: Copy kube-flannel.yml to master node
   get_url:
@@ -30,7 +32,7 @@
   lineinfile:
     path: $HOME/kube-flannel.yml
     regexp: '\"Network\":*'
-    line: "      \"Network\": \"{{ pod_network_cidr }}\","
+    line: "      \"Network\": \"{{ kubernetes_network_cidr }}\","
  
 - name: Install CNI (Flannel)
   command: kubectl apply -f $HOME/kube-flannel.yml
@@ -39,5 +41,15 @@
   command: kubeadm token create --print-join-command
   register: join_command
 
+- name: "Below is the join command for the worker nodes"
+  debug:
+      msg: "{{ join_command.stdout_lines }}"
+
 - name: Copy join command to local file
-  local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="/Ansible/roles/worker/files/join-command"
+  local_action:
+    module: copy
+    content: "{{ join_command.stdout_lines[0] }}"
+    dest: "{{ dest_path }}"
+    mode: 777
+  become: yes
+  become_user: "{{ user }}"
