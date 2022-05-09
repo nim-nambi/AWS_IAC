@@ -13,7 +13,7 @@ resource "aws_instance" "Master_node" {
 }
 
 resource "aws_instance" "Worker_node" {
-  count = 1
+  count = 2
   ami = var.server_ami
   instance_type = var.instance_type
   vpc_security_group_ids = [aws_security_group.Cluster_sg.id]
