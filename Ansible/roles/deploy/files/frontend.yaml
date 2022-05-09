@@ -1,0 +1,37 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backtrack
+  template:
+    metadata:
+      labels:
+        app: backtrack
+    spec:
+      containers:
+        - name: backtrack
+          image: nimnambi/frontend:1.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: frontend
+spec:
+  type: NodePort
+  ports:
+    - port: 30000
+      targetPort: 80
+      protocol: TCP
+      nodePort: 30000
+  selector:
+    app: backtrack
